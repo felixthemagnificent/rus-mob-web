@@ -1,0 +1,16 @@
+FROM ruby:2.6.3-alpine3.9
+
+RUN apk add --update --no-cache build-base postgresql-dev git tzdata nodejs
+
+ENV RAILS_ENV development
+RUN mkdir /app
+WORKDIR /app
+
+COPY Gemfile .
+COPY Gemfile.lock .
+RUN bundle check || bundle install --jobs 4 --retry 4
+
+COPY . .
+
+EXPOSE 3000
+CMD ["rails", "server", "-b", "0.0.0.0"]

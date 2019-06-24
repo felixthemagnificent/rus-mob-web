@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: ash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
+    environment:
+      DATABASE_URL: postgresql://postgres@db/rus-mob_development
+      SECRET_KEY_BASE: ''
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    ports:
+      - "8080:3000"
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      PGPASSWORD_SUPERUSER: postgres
+      PGPASSWORD_ADMIN: postgres
+      PGPASSWORD_STANDBY: postgres
+    ports:
+      - "5432:5432"
